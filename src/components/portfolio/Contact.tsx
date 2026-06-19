@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect } from "react";
+import emailjs from "@emailjs/browser";
 import {
   Mail,
   Phone,
@@ -8,9 +9,15 @@ import {
   Download,
   Send,
   CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import { Reveal, SectionHeading } from "./Reveal";
 import { profile } from "@/lib/portfolio-data";
+
+// EmailJS Configuration
+const EMAILJS_PUBLIC_KEY = "EwwoyWn8VOScS2X2c";
+const EMAILJS_SERVICE_ID = "service_u4e4v19";
+const EMAILJS_TEMPLATE_ID = "template_6g0vqeh";
 
 const contactItems = [
   { icon: Mail, label: "Email", value: profile.email, href: `mailto:${profile.email}` },
@@ -20,17 +27,46 @@ const contactItems = [
 
 export function Contact() {
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  // Initialize EmailJS on component mount
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }, []);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const form = e.currentTarget;
     const data = new FormData(form);
-    const subject = encodeURIComponent(`Portfolio enquiry from ${data.get("name")}`);
-    const body = encodeURIComponent(
-      `${data.get("message")}\n\nFrom: ${data.get("name")} (${data.get("email")})`,
-    );
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    setSent(true);
+
+    const templateParams = {
+      to_email: profile.email,
+      from_name: data.get("name"),
+      from_email: data.get("email"),
+      subject: data.get("subject"),
+      message: data.get("message"),
+    };
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams
+      );
+      setSent(true);
+      setLoading(false);
+      form.reset();
+      // Reset success message after 3 seconds
+      setTimeout(() => setSent(false), 3000);
+    } catch (err) {
+      setError("Failed to send message. Please try again.");
+      setLoading(false);
+      console.error("EmailJS error:", err);
+    }
   };
 
   return (
@@ -115,6 +151,13 @@ export function Contact() {
 
           <Reveal delay={0.1}>
             <form onSubmit={handleSubmit} className="glass rounded-3xl p-7 sm:p-8">
+              {error && (
+                <div className="mb-5 flex items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-600">
+                  <AlertCircle className="size-4 shrink-0" />
+                  {error}
+                </div>
+              )}
+
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field name="name" label="Your Name" placeholder="Jane Doe" />
                 <Field name="email" label="Email" type="email" placeholder="jane@company.com" />
@@ -137,11 +180,17 @@ export function Contact() {
               </div>
               <button
                 type="submit"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.01]"
+                disabled={loading}
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.01] disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {sent ? (
+                {loading ? (
                   <>
-                    <CheckCircle2 className="size-4" /> Opening your email client
+                    <div className="size-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                    Sending...
+                  </>
+                ) : sent ? (
+                  <>
+                    <CheckCircle2 className="size-4" /> Message sent successfully!
                   </>
                 ) : (
                   <>
@@ -198,12 +247,6 @@ export function FooterCTA() {
             </h2>
             <div className="relative mt-8 flex flex-wrap justify-center gap-3">
               <a
-                href={`mailto:${profile.email}`}
-                className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:scale-105"
-              >
-                <Mail className="size-4" /> Hire Me
-              </a>
-              <a
                 href={profile.resume}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -231,9 +274,6 @@ export function FooterCTA() {
             </a>
             <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
               LinkedIn
-            </a>
-            <a href={`mailto:${profile.email}`} className="hover:text-primary">
-              Email
             </a>
           </div>
         </div>

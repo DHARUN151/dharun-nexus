@@ -21,7 +21,7 @@ export const navLinks = [
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Achievements", href: "#achievements" },
-  { label: "Services", href: "#services" },
+  //{ label: "Services", href: "#services" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -156,7 +156,7 @@ export const projects = [
       "Customer records",
       "Automated workflows",
     ],
-    github: "https://github.com/DHARUN151",
+    github: "https://github.com/DHARUN151/vehicle-service-management-system.git",
   },
   {
     title: "Wi-Fi Heatmap Visualization System",
@@ -169,7 +169,7 @@ export const projects = [
       "Dynamic heatmap generation",
       "Network optimization",
     ],
-    github: "https://github.com/DHARUN151",
+    github: "https://github.com/DHARUN151/Smart-wifi-heatmap-generation.gitt",
   },
 ];
 
