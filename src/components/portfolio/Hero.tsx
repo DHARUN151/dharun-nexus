@@ -110,8 +110,8 @@ export function Hero() {
               <img
                 src={profileImg}
                 alt="Portrait of Dharun Kumar S"
-                width={896}
-                height={1152}
+                width={600}
+                height={800}
                 className="aspect-[4/5] w-full rounded-[1.6rem] object-cover"
               />
             </div>
