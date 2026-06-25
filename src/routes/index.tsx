@@ -45,7 +45,7 @@ export const Route = createFileRoute("/")({
     links: [
       {
         rel: "canonical",
-        href: "https://dharunkumars2006.github.io/",
+        href: "https://dharunkumars-portfolio.dev/",
       },
     ],
   }),
