@@ -13,6 +13,8 @@ import { Contact, FooterCTA } from "@/components/portfolio/Contact";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Dharun Kumar S — Full-Stack Developer & Software Engineer" },
       {
         name: "description",
@@ -28,25 +30,22 @@ export const Route = createFileRoute("/")({
     ],
     scripts: [
       {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Person",
-          name: "Dharun Kumar S",
-          jobTitle: "Full-Stack Developer & Software Engineer",
-          email: "mailto:dharunkumars2006@gmail.com",
-          url: "https://github.com/DHARUN151",
-          sameAs: [
-            "https://github.com/DHARUN151",
-            "https://linkedin.com/in/dharunkumars151",
-          ],
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Karur",
-            addressRegion: "Tamil Nadu",
-            addressCountry: "India",
-          },
-        }),
+        async: true,
+        src: "https://www.googletagmanager.com/gtag/js?id=G-V9EGJ6KZW8",
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-V9EGJ6KZW8');
+        `,
+      },
+    ],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://dharunkumars2006.github.io/",
       },
     ],
   }),
