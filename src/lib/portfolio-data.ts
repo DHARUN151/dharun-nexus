@@ -169,7 +169,7 @@ export const projects = [
       "Dynamic heatmap generation",
       "Network optimization",
     ],
-    github: "https://github.com/DHARUN151/Smart-wifi-heatmap-generation.gitt",
+    github: "https://github.com/DHARUN151/Smart-wifi-heatmap-generation.git",
   },
 ];
 
